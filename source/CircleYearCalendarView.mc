@@ -75,19 +75,33 @@ class CircleYearCalendarView extends WatchUi.View {
         var currentYear = Lang.format("$1$", [currentMoment.year]);
         currentYear = currentYear.toNumber();
 
+        // Initialize the year comparison moment here.
+        var beginningOfYearMoment = null;
+
+        // Loop through all months.
         for (var i = 1; i <= 12; i++) {
             var options = {
                 :year => currentYear,
                 :month => i,
                 :day => 1,
             };
-            var beginningOfMonthMoment = Gregorian.info(Gregorian.moment(options), Time.FORMAT_SHORT);
+
+            // Create both moment and info of the beginning of the current month.
+            var beginningOfMonthMoment = Gregorian.moment(options);
+            var beginningOfMonthInfo = Gregorian.info(beginningOfMonthMoment, Time.FORMAT_SHORT);
+
+            // Set the first month's moment as the beginningOfTheYear moment for comparison.
+            if (beginningOfYearMoment == null) {
+                beginningOfYearMoment = beginningOfMonthMoment;
+            }
+
             var dateString = Lang.format(
-                "$1$-$2$-$3$",
+                "DATE: $1$-$2$-$3$ | DayOfYear: $4$",
                 [
-                    beginningOfMonthMoment.year,
-                    beginningOfMonthMoment.month,
-                    beginningOfMonthMoment.day
+                    beginningOfMonthInfo.year,
+                    beginningOfMonthInfo.month,
+                    beginningOfMonthInfo.day,
+                    beginningOfMonthMoment.subtract(beginningOfYearMoment).divide(Gregorian.SECONDS_PER_DAY).value()
                 ]
             );
             System.println(dateString);
