@@ -6,7 +6,19 @@ import Toybox.Lang;
 
 class CircleYearCalendarView extends WatchUi.View {
 
+    // Initial offset where the year starts.
+    var initialOffset;
+
+    // Direction where the year continues (1 for clockwise, -1 for anti-clockwise).
+    var direction;
+
     function initialize() {
+        // Start from the bottom of the circle.
+        self.initialOffset = -0.5 * Math.PI;
+
+        // Direction for the circle is anti-clockwise.
+        self.direction = -1;
+
         View.initialize();
     }
 
@@ -26,6 +38,7 @@ class CircleYearCalendarView extends WatchUi.View {
         var currentDay = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
         var daysInCurrentYear = calculateDaysInYear(currentDay);
         System.println(daysInCurrentYear);
+        self.calculateMonths(currentDay);
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
@@ -55,5 +68,29 @@ class CircleYearCalendarView extends WatchUi.View {
         var beginningOfNextYear = Gregorian.moment(yearOptions);
 
         return beginningOfNextYear.subtract(beginningOfCurrentYear).divide(Gregorian.SECONDS_PER_DAY).value();
+    }
+
+    // Calculate months in the circle.
+    function calculateMonths(currentMoment) {
+        var currentYear = Lang.format("$1$", [currentMoment.year]);
+        currentYear = currentYear.toNumber();
+
+        for (var i = 1; i <= 12; i++) {
+            var options = {
+                :year => currentYear,
+                :month => i,
+                :day => 1,
+            };
+            var beginningOfMonthMoment = Gregorian.info(Gregorian.moment(options), Time.FORMAT_SHORT);
+            var dateString = Lang.format(
+                "$1$-$2$-$3$",
+                [
+                    beginningOfMonthMoment.year,
+                    beginningOfMonthMoment.month,
+                    beginningOfMonthMoment.day
+                ]
+            );
+            System.println(dateString);
+        }
     }
 }
