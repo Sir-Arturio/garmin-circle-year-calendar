@@ -10,15 +10,15 @@ class CircleYearCalendarView extends WatchUi.View {
     // Initial offset where the year starts.
     var initialOffset;
 
-    // Direction where the year continues (1 for clockwise, -1 for anti-clockwise).
-    var direction;
+    // Boolean if direction is clockwise.
+    var isDirectionClockwise;
 
     function initialize() {
         // Start from the bottom of the circle.
         self.initialOffset = -0.5 * Math.PI;
 
-        // Direction for the circle is anti-clockwise.
-        self.direction = -1;
+        // Direction for the circle is counter-clockwise.
+        self.isDirectionClockwise = false;
 
         View.initialize();
     }
@@ -117,8 +117,12 @@ class CircleYearCalendarView extends WatchUi.View {
         }
     }
 
-    function calculateUnitCirclePoint(day, allDays) {
+    function calculateUnitCirclePoint(day, allDays) as Lang.Dictionary {
         var point = {};
+
+        // Unit circle is natively counter-clockwise.
+        var direction = self.isDirectionClockwise ? -1 : 1;
+
         point[:radAngle] = self.initialOffset + (direction * (day.toFloat()/allDays) * 2 * Math.PI);
         point[:cos] = Math.cos(point[:radAngle]);
         point[:sin] = Math.sin(point[:radAngle]);
