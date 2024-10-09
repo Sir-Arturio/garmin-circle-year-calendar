@@ -6,20 +6,7 @@ import Toybox.Lang;
 import Toybox.Math;
 
 class CircleYearCalendarView extends WatchUi.View {
-
-    // Initial offset where the year starts.
-    var initialOffset;
-
-    // Boolean if direction is clockwise.
-    var isDirectionClockwise;
-
     function initialize() {
-        // Start from the bottom of the circle with Christmas eve.
-        self.initialOffset = (-0.5 * Math.PI) + (7/366.0) * Math.PI * 2;
-
-        // Direction for the circle is counter-clockwise.
-        self.isDirectionClockwise = false;
-
         View.initialize();
     }
 
@@ -39,12 +26,11 @@ class CircleYearCalendarView extends WatchUi.View {
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
 
-        var currentDayMoment = Gregorian.moment({:year => 2024, :month => 12, :day => 24});
-        var currentDayInfo = Gregorian.info(currentDayMoment, Time.FORMAT_MEDIUM);
-        var daysInCurrentYear = calculateDaysInYear(currentDayInfo);
-        System.println(daysInCurrentYear);
-        var calculatedMonths = self.calculateMonths(currentDayInfo);
-        var calculatedCurrentDay = self.calculateCurrentDay(currentDayMoment);
+        var currentDayMoment = new Time.Moment(Time.now().value());
+
+        var calendarModel = new CircleYearCalendarModel(currentDayMoment);
+        var calculatedMonths = calendarModel.calculateMonths();
+        var calculatedCurrentDay = calendarModel.calculateCurrentDay();
 
         drawMonths(dc, calculatedMonths);
         drawCurrentDay(dc, calculatedCurrentDay);
@@ -54,99 +40,6 @@ class CircleYearCalendarView extends WatchUi.View {
     // state of this View here. This includes freeing resources from
     // memory.
     function onHide() as Void {
-    }
-
-    // Calculate the number of days in the year of the moment.
-    function calculateDaysInYear(currentMoment) as Lang.Number {
-        var currentYear = Lang.format("$1$", [currentMoment.year]);
-        var yearOptions = {
-            :year => currentYear.toNumber(),
-            :month => 1,
-            :day => 1,
-            :hour => 0,
-            :minute => 0,
-            :second => 0,
-        };
-
-        var beginningOfCurrentYear = Gregorian.moment(yearOptions);
-
-        yearOptions[:year] = currentYear.toNumber() + 1;
-        var beginningOfNextYear = Gregorian.moment(yearOptions);
-
-        return beginningOfNextYear.subtract(beginningOfCurrentYear).divide(Gregorian.SECONDS_PER_DAY).value();
-    }
-
-    // Calculate months in the circle.
-    function calculateMonths(currentMoment) as Lang.Array {
-        // Calculated months.
-        var months = [];
-
-        var currentYear = Lang.format("$1$", [currentMoment.year]);
-        currentYear = currentYear.toNumber();
-        var daysInCurrentYear = calculateDaysInYear(currentMoment);
-
-        // Initialize the year comparison moment here.
-        var beginningOfYearMoment = null;
-
-        // Loop through all months.
-        for (var i = 1; i <= 12; i++) {
-            var options = {
-                :year => currentYear,
-                :month => i,
-                :day => 1,
-            };
-
-            // Create both moment and info of the beginning of the current month.
-            var beginningOfMonthMoment = Gregorian.moment(options);
-            var beginningOfMonthInfo = Gregorian.info(beginningOfMonthMoment, Time.FORMAT_SHORT);
-
-            // Set the first month's moment as the beginningOfTheYear moment for comparison.
-            if (beginningOfYearMoment == null) {
-                beginningOfYearMoment = beginningOfMonthMoment;
-            }
-
-            var dayOfYear = beginningOfMonthMoment.subtract(beginningOfYearMoment).divide(Gregorian.SECONDS_PER_DAY).value();
-            var point = calculateUnitCirclePoint(dayOfYear, daysInCurrentYear);
-
-            months.add({
-                :month => i,
-                :dayOfYear => dayOfYear,
-                :unitCirclePoint => point
-            });
-        }
-
-        return months;
-    }
-
-    // Calculate the current day.
-    function calculateCurrentDay(currentDayMoment) {
-        var currentDayInfo = Gregorian.info(currentDayMoment, Time.FORMAT_SHORT);
-        var daysInYear = calculateDaysInYear(currentDayInfo);
-        var currentYear = Lang.format("$1$", [currentDayInfo.year]);
-        currentYear = currentYear.toNumber();
-        var beginningOfYearMoment = Gregorian.moment({:year => currentYear, :month => 1, :day => 1});
-
-        var dayOfYear = calculateDistanceInDays(currentDayMoment, beginningOfYearMoment);
-        dayOfYear = dayOfYear + 0.5;
-        return calculateUnitCirclePoint(dayOfYear, daysInYear);
-    }
-
-    // Calculate distance in days.
-    function calculateDistanceInDays(biggerMoment, smallerMoment) as Lang.Number {
-        return biggerMoment.subtract(smallerMoment).divide(Gregorian.SECONDS_PER_DAY).value();
-    }
-
-    // Calculate the unit circle point for a day.
-    function calculateUnitCirclePoint(day, allDays) as Lang.Dictionary {
-        var point = {};
-
-        // Unit circle is natively counter-clockwise.
-        var direction = self.isDirectionClockwise ? -1 : 1;
-
-        point[:radAngle] = self.initialOffset + (direction * (day.toFloat()/allDays) * 2 * Math.PI);
-        point[:cos] = Math.cos(point[:radAngle]);
-        point[:sin] = Math.sin(point[:radAngle]);
-        return point;
     }
 
     // Draw the months.
