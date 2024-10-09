@@ -39,12 +39,15 @@ class CircleYearCalendarView extends WatchUi.View {
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
 
-        var currentDay = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-        var daysInCurrentYear = calculateDaysInYear(currentDay);
+        var currentDayMoment = Gregorian.moment({:year => 2023, :month => 12, :day => 24});
+        var currentDayInfo = Gregorian.info(currentDayMoment, Time.FORMAT_MEDIUM);
+        var daysInCurrentYear = calculateDaysInYear(currentDayInfo);
         System.println(daysInCurrentYear);
-        var calculatedMonths = self.calculateMonths(currentDay);
+        var calculatedMonths = self.calculateMonths(currentDayInfo);
+        var calculatedCurrentDay = self.calculateCurrentDay(currentDayMoment);
 
         drawMonths(dc, calculatedMonths);
+        //drawCurrentDay(dc, calculatedCurrentDay);
     }
 
     // Called when this View is removed from the screen. Save the
@@ -115,6 +118,24 @@ class CircleYearCalendarView extends WatchUi.View {
         return months;
     }
 
+    // Calculate the current day.
+    function calculateCurrentDay(currentDayMoment) {
+        var currentDayInfo = Gregorian.info(currentDayMoment, Time.FORMAT_SHORT);
+        var daysInYear = calculateDaysInYear(currentDayInfo);
+        var currentYear = Lang.format("$1$", [currentDayInfo.year]);
+        currentYear = currentYear.toNumber();
+        var beginningOfYearMoment = Gregorian.moment({:year => currentYear, :month => 1, :day => 1});
+
+        var dayOfYear = calculateDistanceInDays(currentDayMoment, beginningOfYearMoment);
+        return calculateUnitCirclePoint(dayOfYear, daysInYear);
+    }
+
+    // Calculate distance in days.
+    function calculateDistanceInDays(biggerMoment, smallerMoment) as Lang.Number {
+        return biggerMoment.subtract(smallerMoment).divide(Gregorian.SECONDS_PER_DAY).value();
+    }
+
+    // Calculate the unit circle point for a day.
     function calculateUnitCirclePoint(day, allDays) as Lang.Dictionary {
         var point = {};
 
