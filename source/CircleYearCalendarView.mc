@@ -36,6 +36,9 @@ class CircleYearCalendarView extends WatchUi.View {
 
     // Update the view
     function onUpdate(dc as Dc) as Void {
+        // Call the parent onUpdate function to redraw the layout
+        View.onUpdate(dc);
+
         var currentDay = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
         var daysInCurrentYear = calculateDaysInYear(currentDay);
         System.println(daysInCurrentYear);
@@ -44,8 +47,7 @@ class CircleYearCalendarView extends WatchUi.View {
         System.println(calculatedMonths[1][:dayOfYear]);
         System.println(calculatedMonths[1][:unitCirclePoint][:sin]);
 
-        // Call the parent onUpdate function to redraw the layout
-        View.onUpdate(dc);
+        drawMonths(dc, calculatedMonths);
     }
 
     // Called when this View is removed from the screen. Save the
@@ -141,5 +143,39 @@ class CircleYearCalendarView extends WatchUi.View {
         point[:cos] = Math.cos(point[:radAngle]);
         point[:sin] = Math.sin(point[:radAngle]);
         return point;
+    }
+
+    // Draw the months.
+    function drawMonths(dc as Dc, months as Array) {
+        var month = months[0];
+
+        // If the width and height are different, use the lowest to calculate the maximum line size.
+        var maxLineSize = (dc.getWidth() < dc.getHeight()) ? dc.getWidth() : dc.getHeight();
+        maxLineSize = maxLineSize / 2;
+
+        // Calculate the center point.
+        var centerX = dc.getWidth() / 2;
+        var centerY = dc.getHeight() / 2;
+
+        System.println(Lang.format(
+            "W: $1$, H: $2$, MAX L: $3$",
+            [
+                dc.getWidth(),
+                dc.getHeight(),
+                maxLineSize
+            ]
+        ));
+        var drawableCirclePoint = calculateDrawableCirclePoint(centerX, centerY, maxLineSize, month[:unitCirclePoint]);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLUE);
+        dc.drawLine(centerX, centerY, drawableCirclePoint[:x], drawableCirclePoint[:y]);
+    }
+
+    function calculateDrawableCirclePoint(centerX as Lang.Number, centerY as Lang.Number, maxLineSize as Lang.Number, unitCirclePoint as Lang.Dictionary) as Lang.Dictionary {
+        var newX = centerX + maxLineSize * unitCirclePoint[:cos];
+        var newY = centerY + -1 * maxLineSize * unitCirclePoint[:sin];
+        return {
+            :x => newX,
+            :y => newY
+        };
     }
 }
