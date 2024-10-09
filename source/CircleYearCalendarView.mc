@@ -43,9 +43,6 @@ class CircleYearCalendarView extends WatchUi.View {
         var daysInCurrentYear = calculateDaysInYear(currentDay);
         System.println(daysInCurrentYear);
         var calculatedMonths = self.calculateMonths(currentDay);
-        System.println(calculatedMonths[1][:month]);
-        System.println(calculatedMonths[1][:dayOfYear]);
-        System.println(calculatedMonths[1][:unitCirclePoint][:sin]);
 
         drawMonths(dc, calculatedMonths);
     }
@@ -113,21 +110,6 @@ class CircleYearCalendarView extends WatchUi.View {
                 :dayOfYear => dayOfYear,
                 :unitCirclePoint => point
             });
-
-            var dateString = Lang.format(
-                "DATE: $1$-$2$-$3$ | DayOfYear: $4$ $5$ | ANGLE $6$, COS: $7$, SIN: $8$",
-                [
-                    beginningOfMonthInfo.year,
-                    beginningOfMonthInfo.month,
-                    beginningOfMonthInfo.day,
-                    dayOfYear,
-                    daysInCurrentYear,
-                    point[:radAngle],
-                    point[:cos],
-                    point[:sin]
-                ]
-            );
-            System.println(dateString);
         }
 
         return months;
@@ -146,9 +128,14 @@ class CircleYearCalendarView extends WatchUi.View {
     }
 
     // Draw the months.
-    function drawMonths(dc as Dc, months as Array) {
-        var month = months[0];
+    function drawMonths(dc as Dc, months as Lang.Array) {
+        for (var i = 0; i < 12; i++) {
+            drawMonth(dc, months[i]);
+        }
+    }
 
+    // Draw a single month to the screen.
+    function drawMonth(dc as Dc, month as Lang.Dictionary) {
         // If the width and height are different, use the lowest to calculate the maximum line size.
         var maxLineSize = (dc.getWidth() < dc.getHeight()) ? dc.getWidth() : dc.getHeight();
         maxLineSize = maxLineSize / 2;
@@ -157,17 +144,12 @@ class CircleYearCalendarView extends WatchUi.View {
         var centerX = dc.getWidth() / 2;
         var centerY = dc.getHeight() / 2;
 
-        System.println(Lang.format(
-            "W: $1$, H: $2$, MAX L: $3$",
-            [
-                dc.getWidth(),
-                dc.getHeight(),
-                maxLineSize
-            ]
-        ));
-        var drawableCirclePoint = calculateDrawableCirclePoint(centerX, centerY, maxLineSize, month[:unitCirclePoint]);
+        // Create a 10px line at the edge of the circle.
+        var drawableCirclePoint =  calculateDrawableCirclePoint(centerX, centerY, maxLineSize - 10, month[:unitCirclePoint]);       
+        var drawableCirclePoint2 = calculateDrawableCirclePoint(centerX, centerY, maxLineSize, month[:unitCirclePoint]);
+
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLUE);
-        dc.drawLine(centerX, centerY, drawableCirclePoint[:x], drawableCirclePoint[:y]);
+        dc.drawLine(drawableCirclePoint[:x], drawableCirclePoint[:y], drawableCirclePoint2[:x], drawableCirclePoint2[:y]);
     }
 
     function calculateDrawableCirclePoint(centerX as Lang.Number, centerY as Lang.Number, maxLineSize as Lang.Number, unitCirclePoint as Lang.Dictionary) as Lang.Dictionary {
