@@ -14,8 +14,8 @@ class CircleYearCalendarView extends WatchUi.View {
     var isDirectionClockwise;
 
     function initialize() {
-        // Start from the bottom of the circle.
-        self.initialOffset = -0.5 * Math.PI;
+        // Start from the bottom of the circle with Christmas eve.
+        self.initialOffset = (-0.5 * Math.PI) + (7/366.0) * Math.PI * 2;
 
         // Direction for the circle is counter-clockwise.
         self.isDirectionClockwise = false;
@@ -39,7 +39,7 @@ class CircleYearCalendarView extends WatchUi.View {
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
 
-        var currentDayMoment = Gregorian.moment({:year => 2023, :month => 12, :day => 24});
+        var currentDayMoment = Gregorian.moment({:year => 2024, :month => 12, :day => 24});
         var currentDayInfo = Gregorian.info(currentDayMoment, Time.FORMAT_MEDIUM);
         var daysInCurrentYear = calculateDaysInYear(currentDayInfo);
         System.println(daysInCurrentYear);
