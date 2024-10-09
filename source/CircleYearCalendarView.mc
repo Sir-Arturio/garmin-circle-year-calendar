@@ -3,6 +3,7 @@ import Toybox.WatchUi;
 import Toybox.Time;
 import Toybox.Time.Gregorian;
 import Toybox.Lang;
+import Toybox.Math;
 
 class CircleYearCalendarView extends WatchUi.View {
 
@@ -74,6 +75,7 @@ class CircleYearCalendarView extends WatchUi.View {
     function calculateMonths(currentMoment) {
         var currentYear = Lang.format("$1$", [currentMoment.year]);
         currentYear = currentYear.toNumber();
+        var daysInCurrentYear = calculateDaysInYear(currentMoment);
 
         // Initialize the year comparison moment here.
         var beginningOfYearMoment = null;
@@ -95,16 +97,31 @@ class CircleYearCalendarView extends WatchUi.View {
                 beginningOfYearMoment = beginningOfMonthMoment;
             }
 
+            var dayOfYear = beginningOfMonthMoment.subtract(beginningOfYearMoment).divide(Gregorian.SECONDS_PER_DAY).value();
+            var point = calculateUnitCirclePoint(dayOfYear, daysInCurrentYear);
+
             var dateString = Lang.format(
-                "DATE: $1$-$2$-$3$ | DayOfYear: $4$",
+                "DATE: $1$-$2$-$3$ | DayOfYear: $4$ $5$ | ANGLE $6$, COS: $7$, SIN: $8$",
                 [
                     beginningOfMonthInfo.year,
                     beginningOfMonthInfo.month,
                     beginningOfMonthInfo.day,
-                    beginningOfMonthMoment.subtract(beginningOfYearMoment).divide(Gregorian.SECONDS_PER_DAY).value()
+                    dayOfYear,
+                    daysInCurrentYear,
+                    point[:radAngle],
+                    point[:cos],
+                    point[:sin]
                 ]
             );
             System.println(dateString);
         }
+    }
+
+    function calculateUnitCirclePoint(day, allDays) {
+        var point = {};
+        point[:radAngle] = self.initialOffset + (direction * (day.toFloat()/allDays) * 2 * Math.PI);
+        point[:cos] = Math.cos(point[:radAngle]);
+        point[:sin] = Math.sin(point[:radAngle]);
+        return point;
     }
 }
