@@ -39,7 +39,10 @@ class CircleYearCalendarView extends WatchUi.View {
         var currentDay = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
         var daysInCurrentYear = calculateDaysInYear(currentDay);
         System.println(daysInCurrentYear);
-        self.calculateMonths(currentDay);
+        var calculatedMonths = self.calculateMonths(currentDay);
+        System.println(calculatedMonths[1][:month]);
+        System.println(calculatedMonths[1][:dayOfYear]);
+        System.println(calculatedMonths[1][:unitCirclePoint][:sin]);
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
@@ -72,7 +75,10 @@ class CircleYearCalendarView extends WatchUi.View {
     }
 
     // Calculate months in the circle.
-    function calculateMonths(currentMoment) {
+    function calculateMonths(currentMoment) as Lang.Array {
+        // Calculated months.
+        var months = [];
+
         var currentYear = Lang.format("$1$", [currentMoment.year]);
         currentYear = currentYear.toNumber();
         var daysInCurrentYear = calculateDaysInYear(currentMoment);
@@ -100,6 +106,12 @@ class CircleYearCalendarView extends WatchUi.View {
             var dayOfYear = beginningOfMonthMoment.subtract(beginningOfYearMoment).divide(Gregorian.SECONDS_PER_DAY).value();
             var point = calculateUnitCirclePoint(dayOfYear, daysInCurrentYear);
 
+            months.add({
+                :month => i,
+                :dayOfYear => dayOfYear,
+                :unitCirclePoint => point
+            });
+
             var dateString = Lang.format(
                 "DATE: $1$-$2$-$3$ | DayOfYear: $4$ $5$ | ANGLE $6$, COS: $7$, SIN: $8$",
                 [
@@ -115,6 +127,8 @@ class CircleYearCalendarView extends WatchUi.View {
             );
             System.println(dateString);
         }
+
+        return months;
     }
 
     function calculateUnitCirclePoint(day, allDays) as Lang.Dictionary {
