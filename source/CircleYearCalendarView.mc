@@ -73,8 +73,9 @@ class CircleYearCalendarView extends WatchUi.View {
         var centerX = dc.getWidth() / 2;
         var centerY = dc.getHeight() / 2;
 
-        // Create a 10px line at the edge of the circle.
-        var drawableCirclePoint =  calculateDrawableCirclePoint(centerX, centerY, maxLineSize - 10, month[:unitCirclePoint]);
+        // Create a 10px line at the edge of the circle. For the first line (start of the year) draw a line of 40px
+        var lineSize = month[:month] == 1 ? 40 : 10;
+        var drawableCirclePoint =  calculateDrawableCirclePoint(centerX, centerY, maxLineSize - lineSize, month[:unitCirclePoint]);
         var drawableCirclePoint2 = calculateDrawableCirclePoint(centerX, centerY, maxLineSize, month[:unitCirclePoint]);
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLUE);
