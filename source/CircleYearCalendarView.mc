@@ -1,9 +1,6 @@
 import Toybox.Graphics;
 import Toybox.WatchUi;
 import Toybox.Time;
-import Toybox.Time.Gregorian;
-import Toybox.Lang;
-import Toybox.Math;
 
 class CircleYearCalendarView extends WatchUi.View {
     function initialize() {
