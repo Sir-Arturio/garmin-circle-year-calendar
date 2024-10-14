@@ -92,6 +92,7 @@ class CircleYearCalendarModel {
         var direction = self.isDirectionClockwise ? -1 : 1;
 
         point[:radAngle] = self.initialOffset + (direction * (day.toFloat()/self.daysInYear) * 2 * Math.PI);
+        point[:angle] = (point[:radAngle] / (2.0 * Math.PI)) * 360;
         point[:cos] = Math.cos(point[:radAngle]);
         point[:sin] = Math.sin(point[:radAngle]);
         return point;
