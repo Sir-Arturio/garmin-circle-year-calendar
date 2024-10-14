@@ -25,9 +25,9 @@ class DrawHelper {
     }
 
     // Draw the current day.
-    public function drawCurrentDay(dc as Dc, dayPoint as Lang.Dictionary) {
-        var drawableCirclePoint =  calculateDrawableCirclePoint(self.centerX, self.centerY, self.circleRadius, dayPoint);
-        dc.drawLine(self.centerX, self.centerY, drawableCirclePoint[:x], drawableCirclePoint[:y]);
+    public function drawCurrentDay(dayPoint as Lang.Dictionary) {
+        var drawableCirclePoint =  self.calculateDrawableCirclePoint(self.centerX, self.centerY, self.circleRadius, dayPoint);
+        self.dc.drawLine(self.centerX, self.centerY, drawableCirclePoint[:x], drawableCirclePoint[:y]);
     }
 
     // Draw the months.
@@ -44,8 +44,8 @@ class DrawHelper {
         var drawableCirclePoint = self.calculateDrawableCirclePoint(self.centerX, self.centerY, self.circleRadius - lineSize, month[:unitCirclePoint]);
         var drawableCirclePoint2 = self.calculateDrawableCirclePoint(self.centerX, self.centerY, self.circleRadius, month[:unitCirclePoint]);
 
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLUE);
-        dc.drawLine(drawableCirclePoint[:x], drawableCirclePoint[:y], drawableCirclePoint2[:x], drawableCirclePoint2[:y]);
+        self.dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLUE);
+        self.dc.drawLine(drawableCirclePoint[:x], drawableCirclePoint[:y], drawableCirclePoint2[:x], drawableCirclePoint2[:y]);
     }
 
     protected function calculateDrawableCirclePoint(centerX as Lang.Number, centerY as Lang.Number, maxLineSize as Lang.Number, unitCirclePoint as Lang.Dictionary) as Lang.Dictionary {
