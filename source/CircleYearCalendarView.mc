@@ -30,7 +30,8 @@ class CircleYearCalendarView extends WatchUi.View {
         var calculatedCurrentDay = calendarModel.calculateCurrentDay();
 
         var drawHelper = new DrawHelper(dc);
-        drawHelper.drawMonths(calculatedMonths);
+        drawHelper.drawMonthArcs(calculatedMonths);
+        drawHelper.drawMonthDividers(calculatedMonths);
         drawHelper.drawCurrentDay(calculatedCurrentDay);
     }
 }
