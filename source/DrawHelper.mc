@@ -31,7 +31,8 @@ class DrawHelper {
 
     // Draw the current day.
     public function drawCurrentDay(dayPoint as Lang.Dictionary) {
-        var drawableCirclePoint = self.calculateDrawableCirclePoint(self.circleRadius, dayPoint);
+        // Leave 5px gap between the current day marker and the month arc.
+        var drawableCirclePoint = self.calculateDrawableCirclePoint(self.circleRadius - self.arcWidth - 5, dayPoint);
         self.dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         self.dc.setPenWidth(1);
         self.dc.drawLine(self.centerX, self.centerY, drawableCirclePoint[:x], drawableCirclePoint[:y]);
