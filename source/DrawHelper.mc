@@ -26,7 +26,7 @@ class DrawHelper {
 
     // Draw the current day.
     public function drawCurrentDay(dayPoint as Lang.Dictionary) {
-        var drawableCirclePoint =  self.calculateDrawableCirclePoint(self.centerX, self.centerY, self.circleRadius, dayPoint);
+        var drawableCirclePoint = self.calculateDrawableCirclePoint(self.circleRadius, dayPoint);
         self.dc.drawLine(self.centerX, self.centerY, drawableCirclePoint[:x], drawableCirclePoint[:y]);
     }
 
@@ -41,16 +41,16 @@ class DrawHelper {
     protected function drawMonth(month as Lang.Dictionary) {
         // Create a 10px line at the edge of the circle. For the first line (start of the year) draw a line of 40px
         var lineSize = month[:month] == 1 ? 40 : 10;
-        var drawableCirclePoint = self.calculateDrawableCirclePoint(self.centerX, self.centerY, self.circleRadius - lineSize, month[:unitCirclePoint]);
-        var drawableCirclePoint2 = self.calculateDrawableCirclePoint(self.centerX, self.centerY, self.circleRadius, month[:unitCirclePoint]);
+        var drawableCirclePoint = self.calculateDrawableCirclePoint(self.circleRadius - lineSize, month[:unitCirclePoint]);
+        var drawableCirclePoint2 = self.calculateDrawableCirclePoint(self.circleRadius, month[:unitCirclePoint]);
 
         self.dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLUE);
         self.dc.drawLine(drawableCirclePoint[:x], drawableCirclePoint[:y], drawableCirclePoint2[:x], drawableCirclePoint2[:y]);
     }
 
-    protected function calculateDrawableCirclePoint(centerX as Lang.Number, centerY as Lang.Number, maxLineSize as Lang.Number, unitCirclePoint as Lang.Dictionary) as Lang.Dictionary {
-        var newX = centerX + maxLineSize * unitCirclePoint[:cos];
-        var newY = centerY + -1 * maxLineSize * unitCirclePoint[:sin];
+    protected function calculateDrawableCirclePoint(lineLength as Lang.Number, unitCirclePoint as Lang.Dictionary) as Lang.Dictionary {
+        var newX = self.centerX + lineLength * unitCirclePoint[:cos];
+        var newY = self.centerY + -1 * lineLength * unitCirclePoint[:sin];
         return {
             :x => newX,
             :y => newY
