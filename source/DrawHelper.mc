@@ -13,6 +13,9 @@ class DrawHelper {
     // Circle radius
     var circleRadius;
 
+    // Arc width
+    var arcWidth;
+
     public function initialize(dc as Dc) {
         self.dc = dc;
 
@@ -22,6 +25,8 @@ class DrawHelper {
 
         // Calculate circle radius
         self.circleRadius = self.centerX <= self.centerY ? self.centerX : self.centerY;
+
+        self.arcWidth = 10;
     }
 
     // Draw the current day.
@@ -35,7 +40,6 @@ class DrawHelper {
     // Draw the month arcs.
     public function drawMonthArcs(months as Lang.Array) {
         var color;
-        var width = 10;
         var angle;
         var angle2;
 
@@ -45,8 +49,8 @@ class DrawHelper {
 
             color = i % 2 ? Graphics.COLOR_YELLOW : Graphics.COLOR_BLUE;
             dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-            dc.setPenWidth(width);
-            dc.drawArc(self.centerX, self.centerY, circleRadius - (width / 2), Graphics.ARC_COUNTER_CLOCKWISE, angle, angle2);
+            dc.setPenWidth(self.arcWidth);
+            dc.drawArc(self.centerX, self.centerY, circleRadius - (self.arcWidth / 2), Graphics.ARC_COUNTER_CLOCKWISE, angle, angle2);
         }
     }
 
@@ -62,7 +66,7 @@ class DrawHelper {
         // Create black month divider at the edge of the circle.
         // Use a bigger width at the beginning of the year to accomodate the year marker.
         var penWidth = month[:month] == 1 ? 5 : 3;
-        var drawableCirclePoint = self.calculateDrawableCirclePoint(self.circleRadius - 10, month[:unitCirclePoint]);
+        var drawableCirclePoint = self.calculateDrawableCirclePoint(self.circleRadius - self.arcWidth, month[:unitCirclePoint]);
         var drawableCirclePoint2 = self.calculateDrawableCirclePoint(self.circleRadius, month[:unitCirclePoint]);
 
         // Draw divider.
