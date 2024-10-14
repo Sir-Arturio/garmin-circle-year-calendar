@@ -32,62 +32,8 @@ class CircleYearCalendarView extends WatchUi.View {
         var calculatedMonths = calendarModel.calculateMonths();
         var calculatedCurrentDay = calendarModel.calculateCurrentDay();
 
-        drawMonths(dc, calculatedMonths);
-        drawCurrentDay(dc, calculatedCurrentDay);
-    }
-
-    // Called when this View is removed from the screen. Save the
-    // state of this View here. This includes freeing resources from
-    // memory.
-    function onHide() as Void {
-    }
-
-    // Draw the months.
-    function drawMonths(dc as Dc, months as Lang.Array) {
-        for (var i = 0; i < 12; i++) {
-            drawMonth(dc, months[i]);
-        }
-    }
-
-    // Draw the current day.
-    function drawCurrentDay(dc as Dc, dayPoint as Lang.Dictionary) {
-        // If the width and height are different, use the lowest to calculate the maximum line size.
-        var maxLineSize = (dc.getWidth() < dc.getHeight()) ? dc.getWidth() : dc.getHeight();
-        maxLineSize = maxLineSize / 2;
-
-        // Calculate the center point.
-        var centerX = dc.getWidth() / 2;
-        var centerY = dc.getHeight() / 2;
-
-        var drawableCirclePoint =  calculateDrawableCirclePoint(centerX, centerY, maxLineSize, dayPoint);
-        dc.drawLine(centerX, centerY, drawableCirclePoint[:x], drawableCirclePoint[:y]);
-    }
-
-    // Draw a single month to the screen.
-    function drawMonth(dc as Dc, month as Lang.Dictionary) {
-        // If the width and height are different, use the lowest to calculate the maximum line size.
-        var maxLineSize = (dc.getWidth() < dc.getHeight()) ? dc.getWidth() : dc.getHeight();
-        maxLineSize = maxLineSize / 2;
-
-        // Calculate the center point.
-        var centerX = dc.getWidth() / 2;
-        var centerY = dc.getHeight() / 2;
-
-        // Create a 10px line at the edge of the circle. For the first line (start of the year) draw a line of 40px
-        var lineSize = month[:month] == 1 ? 40 : 10;
-        var drawableCirclePoint =  calculateDrawableCirclePoint(centerX, centerY, maxLineSize - lineSize, month[:unitCirclePoint]);
-        var drawableCirclePoint2 = calculateDrawableCirclePoint(centerX, centerY, maxLineSize, month[:unitCirclePoint]);
-
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLUE);
-        dc.drawLine(drawableCirclePoint[:x], drawableCirclePoint[:y], drawableCirclePoint2[:x], drawableCirclePoint2[:y]);
-    }
-
-    function calculateDrawableCirclePoint(centerX as Lang.Number, centerY as Lang.Number, maxLineSize as Lang.Number, unitCirclePoint as Lang.Dictionary) as Lang.Dictionary {
-        var newX = centerX + maxLineSize * unitCirclePoint[:cos];
-        var newY = centerY + -1 * maxLineSize * unitCirclePoint[:sin];
-        return {
-            :x => newX,
-            :y => newY
-        };
+        var drawHelper = new DrawHelper(dc);
+        drawHelper.drawMonths(calculatedMonths);
+        drawHelper.drawCurrentDay(dc, calculatedCurrentDay);
     }
 }
