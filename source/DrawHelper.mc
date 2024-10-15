@@ -16,7 +16,7 @@ class DrawHelper {
     // Arc width
     var arcWidth;
 
-    public function initialize(dc as Dc) {
+    public function initialize(dc as Dc, arcWidth) {
         self.dc = dc;
 
         // Calculate the center point.
@@ -26,7 +26,7 @@ class DrawHelper {
         // Calculate circle radius
         self.circleRadius = self.centerX <= self.centerY ? self.centerX : self.centerY;
 
-        self.arcWidth = 10;
+        self.arcWidth = arcWidth;
     }
 
     // Draw the current day.
