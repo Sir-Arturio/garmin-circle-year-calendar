@@ -39,8 +39,7 @@ class DrawHelper {
     }
 
     // Draw the month arcs.
-    public function drawMonthArcs(months as Lang.Array) {
-        var color;
+    public function drawMonthArcs(months as Lang.Array, monthColors as Lang.Array) {
         var angle;
         var angle2;
 
@@ -48,8 +47,7 @@ class DrawHelper {
             angle = months[i][:unitCirclePoint][:angle];
             angle2 = (i < 11) ? months[i+1][:unitCirclePoint][:angle] : months[0][:unitCirclePoint][:angle];
 
-            color = i % 2 ? Graphics.COLOR_YELLOW : Graphics.COLOR_BLUE;
-            dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(monthColors[i], Graphics.COLOR_TRANSPARENT);
             dc.setPenWidth(self.arcWidth);
             dc.drawArc(self.centerX, self.centerY, circleRadius - (self.arcWidth / 2), Graphics.ARC_COUNTER_CLOCKWISE, angle, angle2);
         }
