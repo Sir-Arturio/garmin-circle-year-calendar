@@ -25,6 +25,18 @@ class CircleYearCalendarView extends WatchUi.View {
 
         var currentDayMoment = new Time.Moment(Time.now().value());
 
+        var calendarModel = new CircleYearCalendarModel(currentDayMoment);
+        var calculatedMonths = calendarModel.calculateMonths();
+        var calculatedCurrentDay = calendarModel.calculateCurrentDay();
+
+        var drawHelper = new DrawHelper(dc, 10);
+        drawHelper.drawMonthArcs(calculatedMonths, self.getMonthColors());
+        drawHelper.drawMonthDividers(calculatedMonths);
+        drawHelper.drawCurrentDay(calculatedCurrentDay);
+    }
+
+    // Get month colors.
+    function getMonthColors() {
         var monthColors = [];
         monthColors.add(Graphics.COLOR_BLUE);
         monthColors.add(Graphics.COLOR_BLUE);
@@ -38,14 +50,6 @@ class CircleYearCalendarView extends WatchUi.View {
         monthColors.add(Graphics.COLOR_ORANGE);
         monthColors.add(Graphics.COLOR_BLUE);
         monthColors.add(Graphics.COLOR_RED);
-
-        var calendarModel = new CircleYearCalendarModel(currentDayMoment);
-        var calculatedMonths = calendarModel.calculateMonths();
-        var calculatedCurrentDay = calendarModel.calculateCurrentDay();
-
-        var drawHelper = new DrawHelper(dc, 10);
-        drawHelper.drawMonthArcs(calculatedMonths, monthColors);
-        drawHelper.drawMonthDividers(calculatedMonths);
-        drawHelper.drawCurrentDay(calculatedCurrentDay);
+        return monthColors;
     }
 }
