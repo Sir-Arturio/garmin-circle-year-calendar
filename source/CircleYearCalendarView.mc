@@ -1,6 +1,7 @@
 import Toybox.Graphics;
 import Toybox.WatchUi;
 import Toybox.Time;
+import Toybox.Math;
 
 class CircleYearCalendarView extends WatchUi.View {
     function initialize() {
@@ -25,7 +26,11 @@ class CircleYearCalendarView extends WatchUi.View {
 
         var currentDayMoment = new Time.Moment(Time.now().value());
 
-        var calendarModel = new CircleYearCalendarModel(currentDayMoment);
+        var offsetRad = -0.5 * Math.PI;
+        var offsetDays = 21;
+        var directionClockwise = false;
+
+        var calendarModel = new CircleYearCalendarModel(currentDayMoment, offsetRad, offsetDays, directionClockwise);
         var calculatedMonths = calendarModel.calculateMonths();
         var calculatedCurrentDay = calendarModel.calculateCurrentDay();
 

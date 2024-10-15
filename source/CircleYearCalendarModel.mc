@@ -18,9 +18,10 @@ class CircleYearCalendarModel {
     // The beginning of the current year moment.
     var beginningOfCurrentYearMoment;
 
+    // Days in the moment's year.
     var daysInYear;
 
-    public function initialize(newMoment) {
+    public function initialize(newMoment, offsetRad, offsetDays, isDirectionClockwise as Lang.Boolean) {
         self.currentMoment = newMoment;
         self.currentMomentInfo = Gregorian.info(newMoment, Time.FORMAT_SHORT);
 
@@ -29,10 +30,10 @@ class CircleYearCalendarModel {
         self.daysInYear = self.calculateDaysInYear();
 
         // Start from the bottom of the circle with Christmas eve.
-        self.initialOffset = (-0.5 * Math.PI) + (7/self.daysInYear.toFloat()) * Math.PI * 2;
+        self.initialOffset = offsetRad + (offsetDays/self.daysInYear.toFloat()) * Math.PI * 2;
 
         // Direction for the circle is counter-clockwise.
-        self.isDirectionClockwise = false;
+        self.isDirectionClockwise = isDirectionClockwise;
     }
 
     // Calculate months in the circle.
