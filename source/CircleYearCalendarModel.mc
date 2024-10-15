@@ -29,7 +29,6 @@ class CircleYearCalendarModel {
 
         self.daysInYear = self.calculateDaysInYear();
 
-        // Start from the bottom of the circle with Christmas eve.
         self.initialOffset = offsetRad + (offsetDays/self.daysInYear.toFloat()) * Math.PI * 2;
 
         // Direction for the circle is counter-clockwise.
