@@ -44,8 +44,10 @@ class DrawHelper {
         var angle2;
 
         for (var i = 0; i < 12; i++) {
-            angle = months[i][:unitCirclePoint][:angle];
+            // Ceil and floor the angles to prevent day arcs from bleeding together.
+            angle = Math.ceil(months[i][:unitCirclePoint][:angle]);
             angle2 = (i < 11) ? months[i+1][:unitCirclePoint][:angle] : months[0][:unitCirclePoint][:angle];
+            angle2 = Math.floor(angle2);
 
             dc.setColor(monthColors[i], Graphics.COLOR_TRANSPARENT);
             dc.setPenWidth(self.arcWidth);
