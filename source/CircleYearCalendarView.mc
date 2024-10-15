@@ -27,7 +27,7 @@ class CircleYearCalendarView extends WatchUi.View {
         var currentDayMoment = new Time.Moment(Time.now().value());
 
         var offsetRad = -0.5 * Math.PI;
-        var offsetDays = 21;
+        var offsetDays = 0;
         var directionClockwise = false;
 
         var calendarModel = new CircleYearCalendarModel(currentDayMoment, offsetRad, offsetDays, directionClockwise);
