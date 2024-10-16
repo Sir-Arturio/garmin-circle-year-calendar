@@ -54,7 +54,7 @@ class CircleYearCalendarView extends WatchUi.View {
         monthColors.add(Graphics.COLOR_ORANGE);
         monthColors.add(Graphics.COLOR_ORANGE);
         monthColors.add(Graphics.COLOR_BLUE);
-        monthColors.add(Graphics.COLOR_RED);
+        monthColors.add(Graphics.COLOR_BLUE);
         return monthColors;
     }
 }
