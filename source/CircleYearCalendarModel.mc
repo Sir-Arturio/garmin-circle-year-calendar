@@ -65,7 +65,7 @@ class CircleYearCalendarModel {
     }
 
     // Calculate the current day.
-    public function calculateCurrentDay() {
+    public function calculateCurrentDay() as Lang.Array {
         var dayOfYear = calculateDistanceInDays(self.currentMoment, self.beginningOfCurrentYearMoment);
         dayOfYear = dayOfYear + 0.5;
         var currentDayPoint = calculateUnitCirclePointFromDay(dayOfYear);
@@ -92,7 +92,7 @@ class CircleYearCalendarModel {
     }
 
     // Calculate the unit circle point for a day.
-    protected function calculateUnitCirclePointFromDay(day) {
+    protected function calculateUnitCirclePointFromDay(day) as Lang.Dictionary {
         // Unit circle is natively counter-clockwise.
         var direction = self.isDirectionClockwise ? -1 : 1;
 
