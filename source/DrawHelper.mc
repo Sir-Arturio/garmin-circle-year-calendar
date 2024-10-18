@@ -30,12 +30,19 @@ class DrawHelper {
     }
 
     // Draw the current day.
-    public function drawCurrentDay(dayPoint as Lang.Dictionary) {
+    public function drawCurrentDay(currentDayHandPoints) {
+        var dayPoint = currentDayHandPoints[0];
+
         // Leave 5px gap between the current day marker and the month arc.
         var drawableCirclePoint = self.calculateDrawableCirclePoint(self.circleRadius - self.arcWidth - 5, dayPoint);
         self.dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         self.dc.setPenWidth(1);
-        self.dc.drawLine(self.centerX, self.centerY, drawableCirclePoint[:x], drawableCirclePoint[:y]);
+        self.dc.drawLine(self.centerX, self.centerY, drawableCirclePoint[0], drawableCirclePoint[1]);
+
+        for (var i = 1; i < 3; i++) {
+            drawableCirclePoint = self.calculateDrawableCirclePoint(5, currentDayHandPoints[i]);
+            self.dc.drawLine(self.centerX, self.centerY, drawableCirclePoint[0], drawableCirclePoint[1]);
+        }
     }
 
     // Draw the month arcs.
@@ -73,23 +80,20 @@ class DrawHelper {
         // Draw divider.
         self.dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         self.dc.setPenWidth(penWidth);
-        self.dc.drawLine(drawableCirclePoint[:x], drawableCirclePoint[:y], drawableCirclePoint2[:x], drawableCirclePoint2[:y]);
+        self.dc.drawLine(drawableCirclePoint[0], drawableCirclePoint[1], drawableCirclePoint2[0], drawableCirclePoint2[1]);
 
         // At the beginning of the year, draw a year marker.
         if(month[:month] == 1) {
             self.dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
             self.dc.setPenWidth(2);
             drawableCirclePoint = self.calculateDrawableCirclePoint(self.circleRadius - 40, month[:unitCirclePoint]);
-            self.dc.drawLine(drawableCirclePoint[:x], drawableCirclePoint[:y], drawableCirclePoint2[:x], drawableCirclePoint2[:y]);
+            self.dc.drawLine(drawableCirclePoint[0], drawableCirclePoint[1], drawableCirclePoint2[0], drawableCirclePoint2[1]);
         }
     }
 
-    protected function calculateDrawableCirclePoint(lineLength as Lang.Number, unitCirclePoint as Lang.Dictionary) as Lang.Dictionary {
+    protected function calculateDrawableCirclePoint(lineLength as Lang.Number, unitCirclePoint as Lang.Dictionary) as Lang.Array {
         var newX = self.centerX + lineLength * unitCirclePoint[:cos];
         var newY = self.centerY + -1 * lineLength * unitCirclePoint[:sin];
-        return {
-            :x => newX,
-            :y => newY
-        };
+        return [ newX, newY ];
     }
 }
