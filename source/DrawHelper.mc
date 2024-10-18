@@ -30,19 +30,20 @@ class DrawHelper {
     }
 
     // Draw the current day.
-    public function drawCurrentDay(currentDayHandPoints) {
-        var dayPoint = currentDayHandPoints[0];
+    public function drawCurrentDay(currentDayHandPoints as Lang.Array) {
+        var currentDayHandPolygon = [];
 
+        // The tip of the current day hand.
         // Leave 5px gap between the current day marker and the month arc.
-        var drawableCirclePoint = self.calculateDrawableCirclePoint(self.circleRadius - self.arcWidth - 5, dayPoint);
+        currentDayHandPolygon.add(self.calculateDrawableCirclePoint(self.circleRadius - self.arcWidth - 5, currentDayHandPoints[0]));
+
+        // The base of the current day hand.
+        currentDayHandPolygon.add(self.calculateDrawableCirclePoint(5, currentDayHandPoints[1]));
+        currentDayHandPolygon.add(self.calculateDrawableCirclePoint(5, currentDayHandPoints[2]));
+
         self.dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         self.dc.setPenWidth(1);
-        self.dc.drawLine(self.centerX, self.centerY, drawableCirclePoint[0], drawableCirclePoint[1]);
-
-        for (var i = 1; i < 3; i++) {
-            drawableCirclePoint = self.calculateDrawableCirclePoint(5, currentDayHandPoints[i]);
-            self.dc.drawLine(self.centerX, self.centerY, drawableCirclePoint[0], drawableCirclePoint[1]);
-        }
+        self.dc.fillPolygon(currentDayHandPolygon);
     }
 
     // Draw the month arcs.
