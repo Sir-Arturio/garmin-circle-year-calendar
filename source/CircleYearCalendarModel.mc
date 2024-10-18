@@ -52,7 +52,7 @@ class CircleYearCalendarModel {
             var beginningOfMonthMoment = Gregorian.moment(options);
 
             var dayOfYear = self.calculateDistanceInDays(beginningOfMonthMoment, self.beginningOfCurrentYearMoment);
-            var point = calculateUnitCirclePoint(dayOfYear);
+            var point = calculateUnitCirclePointFromDay(dayOfYear);
 
             months.add({
                 :month => i,
@@ -68,7 +68,14 @@ class CircleYearCalendarModel {
     public function calculateCurrentDay() {
         var dayOfYear = calculateDistanceInDays(self.currentMoment, self.beginningOfCurrentYearMoment);
         dayOfYear = dayOfYear + 0.5;
-        return calculateUnitCirclePoint(dayOfYear);
+        var currentDayPoint = calculateUnitCirclePointFromDay(dayOfYear);
+
+        var currentDayHandPoints = [];
+        currentDayHandPoints.add(currentDayPoint);
+        currentDayHandPoints.add(calculateUnitCirclePoint(currentDayPoint[:radAngle] + Math.PI/2));
+        currentDayHandPoints.add(calculateUnitCirclePoint(currentDayPoint[:radAngle] - Math.PI/2));
+
+        return currentDayHandPoints;
     }
 
     // Calculate the number of days in the year.
@@ -85,13 +92,18 @@ class CircleYearCalendarModel {
     }
 
     // Calculate the unit circle point for a day.
-    protected function calculateUnitCirclePoint(day) as Lang.Dictionary {
-        var point = {};
-
+    protected function calculateUnitCirclePointFromDay(day) {
         // Unit circle is natively counter-clockwise.
         var direction = self.isDirectionClockwise ? -1 : 1;
 
-        point[:radAngle] = self.initialOffset + (direction * (day.toFloat()/self.daysInYear) * 2 * Math.PI);
+        return calculateUnitCirclePoint(self.initialOffset + (direction * (day.toFloat()/self.daysInYear) * 2 * Math.PI));
+    }
+
+    // Calculate the unit circle point for a rad angle.
+    protected function calculateUnitCirclePoint(radAngle) as Lang.Dictionary {
+        var point = {};
+
+        point[:radAngle] = radAngle;
         point[:angle] = (point[:radAngle] / (2.0 * Math.PI)) * 360;
         point[:cos] = Math.cos(point[:radAngle]);
         point[:sin] = Math.sin(point[:radAngle]);
